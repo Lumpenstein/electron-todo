@@ -69,7 +69,17 @@ const menuTemplate = [
   {
     label: 'File',
       submenu: [
-          {label: 'New Todo'}
+          {label: 'New Todo'},
+          {
+            label: 'Quit',
+            click() {
+              app.quit();
+            }
+          }
       ]
   }
 ];
+// Add an empty menu for macOs, else first entry gets merged in AppName menu
+if (process.platform === 'darwin') {
+  menuTemplate.unshift({label: ''});
+}
