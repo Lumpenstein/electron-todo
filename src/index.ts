@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, Menu } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 
@@ -15,12 +15,16 @@ if (isDevMode) {
 const createWindow = async () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 400,
+    height: 400,
   });
 
   // and load the index.html of the app.
   mainWindow.loadURL(`file://${__dirname}/index.html`);
+
+  const mainMenu = Menu.buildFromTemplate(menuTemplate);
+
+  mainWindow.setMenu(mainMenu);
 
   // Open the DevTools.
   if (isDevMode) {
@@ -61,3 +65,11 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+const menuTemplate = [
+  {
+    label: 'File',
+      submenu: [
+          {label: 'New Todo'}
+      ]
+  }
+];
