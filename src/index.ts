@@ -2,6 +2,8 @@ import { app, BrowserWindow, Menu } from 'electron';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { enableLiveReload } from 'electron-compile';
 
+import { menuTemplate } from './app/menu/menu';
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage co¶å6§llected.
 let mainWindow: Electron.BrowserWindow | null = null;
@@ -65,21 +67,3 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-const menuTemplate = [
-  {
-    label: 'File',
-      submenu: [
-          {label: 'New Todo'},
-          {
-            label: 'Quit',
-            click() {
-              app.quit();
-            }
-          }
-      ]
-  }
-];
-// Add an empty menu for macOs, else first entry gets merged in AppName menu
-if (process.platform === 'darwin') {
-  menuTemplate.unshift({label: ''});
-}
