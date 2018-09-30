@@ -1,12 +1,17 @@
 import * as React from 'react';
 
-export class AddTodo extends React.Component<undefined, undefined> {
+import { ipcRenderer } from 'electron';
+
+export class AddTodo extends React.Component<any, any> {
 
   addNewTodo = (event: any) => {
     if (event !== null) {
+
       event.preventDefault();
-      const todo = event.target;
-      console.log(todo);
+
+      const input = document.querySelector('input[data-id=inputAddTodo]').value;
+
+      ipcRenderer.send('todo:add', input);
     }
   };
 
@@ -19,6 +24,7 @@ export class AddTodo extends React.Component<undefined, undefined> {
             <label htmlFor=''>Enter your new todo:</label>
             <input
               type='text'
+              data-id='inputAddTodo'
               autoFocus
               minLength={1}
             />

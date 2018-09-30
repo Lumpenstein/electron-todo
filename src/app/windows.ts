@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu } from 'electron';
+import { app, BrowserWindow, Menu, ipcMain } from 'electron';
 
 import {menuTemplate} from './menu/menu';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
@@ -10,6 +10,8 @@ import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-install
 export let mainWindow: Electron.BrowserWindow | null = null;
 export let addTodoWindow: Electron.BrowserWindow | null = null;
 
+const isDevMode = process.execPath.match(/[\\/]electron/);
+
 export const createMainWindow = async () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -17,15 +19,14 @@ export const createMainWindow = async () => {
     height: 800
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/index.html`);
+  // and load the main.html of the app.
+  mainWindow.loadURL(`file://${__dirname}/views/main/main.html`);
 
   // Set mainMenu on mainWindow
   const mainMenu = Menu.buildFromTemplate(menuTemplate);
   mainWindow.setMenu(mainMenu);
 
   // Open the DevTools.
-  const isDevMode = process.execPath.match(/[\\/]electron/);
   if (isDevMode) {
     await installExtension(REACT_DEVELOPER_TOOLS);
     mainWindow.webContents.openDevTools();
@@ -41,6 +42,16 @@ export const createMainWindow = async () => {
     // Close app if mainWindow closed
     app.quit();
   });
+
+  // Listen to addToDoWindow
+  ipcMain.on('todo:add', (event: any, data: any) => {
+    console.log(data);
+    // Relay data to the mainWindow
+    if (data && data.length > 0) {
+      mainWindow.webContents.send('todo:add', data);
+      addTodoWindow.close();
+    }
+  });
 };
 
 export const createAddTodoWindow = () => {
@@ -49,6 +60,9 @@ export const createAddTodoWindow = () => {
     width: 450,
     height: 300
   });
+
   // Load addTodo content
   addTodoWindow.loadURL(`file://${__dirname}/views/addTodo/addTodo.html`);
+
+  addTodoWindow.webContents.openDevTools();
 };
