@@ -9,9 +9,9 @@ export class AddTodo extends React.Component<any, any> {
 
       event.preventDefault();
 
-      const input = document.querySelector('input[data-id=inputAddTodo]').value;
+      const todo = document.querySelector('input[data-id=inputAddTodo]').value;
 
-      ipcRenderer.send('todo:add', input);
+      ipcRenderer.send('todo:add', todo);
     }
   };
 

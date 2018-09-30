@@ -1,5 +1,5 @@
 import { app } from 'electron';
-import { createAddTodoWindow } from '../windows';
+import { createAddTodoWindow, clearTodoList } from '../windows';
 
 export const menuTemplate = [
   {
@@ -9,6 +9,12 @@ export const menuTemplate = [
         label: 'New Todo',
         click() {
           createAddTodoWindow();
+        }
+      },
+      {
+        label: 'Clear Todos',
+        click() {
+          clearTodoList();
         }
       },
       {
@@ -38,6 +44,9 @@ if (process.env.NODE_ENV !== 'production') {
   menuTemplate.push({
       label: 'View',
       submenu: [
+        {
+          role: 'reload'
+        },
         {
           label: 'Toggle DevTools',
           click(item, focusedWindow) {

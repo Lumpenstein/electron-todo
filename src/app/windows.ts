@@ -34,22 +34,27 @@ export const createMainWindow = async () => {
 
   // Emitted when the window is closed.
   mainWindow.on('closed', () => {
+    // Close other windows
+    if (addTodoWindow) {
+      addTodoWindow.close();
+    }
+
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    mainWindow = null;
-    addTodoWindow = null;
+    mainWindow = null; // For GC
+
     // Close app if mainWindow closed
     app.quit();
   });
 
   // Listen to addToDoWindow
-  ipcMain.on('todo:add', (event: any, data: any) => {
-    console.log(data);
-    // Relay data to the mainWindow
-    if (data && data.length > 0) {
-      mainWindow.webContents.send('todo:add', data);
-      addTodoWindow.close();
+  ipcMain.on('todo:add', (event: any, todo: any) => {
+    // Relay data to the mainWindow and close addTodoWindow
+    if (todo && todo.length > 0) {
+      mainWindow!.webContents.send('todo:add', todo);
+      addTodoWindow!.close();
+      addTodoWindow = null; // For GC
     }
   });
 };
@@ -64,5 +69,15 @@ export const createAddTodoWindow = () => {
   // Load addTodo content
   addTodoWindow.loadURL(`file://${__dirname}/views/addTodo/addTodo.html`);
 
-  addTodoWindow.webContents.openDevTools();
+  // Open the DevTools.
+  if (isDevMode) {
+    addTodoWindow.webContents.openDevTools();
+  }
+
+  // Emitted when the window is closed.
+  addTodoWindow.on('closed', () => { addTodoWindow = null; }); // For GC
+};
+
+export const clearTodoList = () => {
+  mainWindow.webContents.send('todoList:clear', {});
 };
