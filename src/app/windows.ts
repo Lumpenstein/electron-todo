@@ -1,6 +1,6 @@
 import {app, BrowserWindow, Menu, ipcMain} from 'electron';
 
-import {applicationMenuTemplate} from './menus/menu';
+import {applicationMenuTemplate} from './menus/applicationMenu';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 // __dirname === /src/app/
