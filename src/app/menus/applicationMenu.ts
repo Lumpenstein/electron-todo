@@ -1,5 +1,5 @@
-import { app } from 'electron';
-import { createAddTodoWindow, clearTodoList } from '../windows';
+import {app} from 'electron';
+import {createAddTodoWindow, clearTodoList, createTrayWindow} from '../windows';
 
 export const applicationMenuTemplate = [
   {
@@ -18,6 +18,12 @@ export const applicationMenuTemplate = [
         }
       },
       {
+        label: 'Launch Tray service',
+        click() {
+          createTrayWindow();
+        }
+      },
+      {
         label: 'Quit',
         accelerator: (() => {
           if (process.platform === 'darwin') {
@@ -25,7 +31,7 @@ export const applicationMenuTemplate = [
           } else if (process.platform === 'win32') {
             return 'Ctrl+Q';
           }
-          return'Ctrl+Q';
+          return 'Ctrl+Q';
         })(),
         click() {
           app.quit();
@@ -53,7 +59,7 @@ if (process.env.NODE_ENV !== 'production') {
             focusedWindow.toggleDevTools();
           },
           accelerator: (() => {
-            return'Ctrl+I';
+            return 'Ctrl+I';
           })(),
         }
       ]

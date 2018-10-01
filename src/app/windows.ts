@@ -1,8 +1,9 @@
-import {app, BrowserWindow, Menu, ipcMain} from 'electron';
+import {app, BrowserWindow, Menu, Tray, ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 import {applicationMenuTemplate} from './menus/applicationMenu';
 import {TODOLIST_ADD, TODOLIST_CLEAR} from './utils/ipcCommands';
+import * as path from 'path';
 
 // __dirname === /src/app/
 
@@ -10,6 +11,8 @@ import {TODOLIST_ADD, TODOLIST_CLEAR} from './utils/ipcCommands';
 // be closed automatically when the JavaScript object is garbage collected.
 export let mainWindow: Electron.BrowserWindow | null = null;
 export let addTodoWindow: Electron.BrowserWindow | null = null;
+export let trayWindow: Electron.BrowserWindow | null = null;
+export let tray: Electron.Tray | null = null;
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 
@@ -88,6 +91,53 @@ export const createAddTodoWindow = () => {
   addTodoWindow.on('closed', () => {
     addTodoWindow = null;
   }); // For GC
+};
+
+export const createTrayWindow = () => {
+  // If addTodoWindow already opened bring it to foreground and center it on the screen
+  if (trayWindow) {
+    trayWindow.focus();
+
+    // Create new trayWindow
+  } else {
+    trayWindow = new BrowserWindow({
+      title: 'Add a new Todo',
+      width: 300,
+      height: 100,
+      frame: false,
+      resizable: false
+    });
+  }
+
+  // Load addTodo content
+  trayWindow.loadURL(`file://${__dirname}/views/tray/tray.html`);
+
+  // Open the DevTools
+  // if (isDevMode) {
+  //   trayWindow.webContents.openDevTools();
+  // }
+
+  // Emitted when the window is closed.
+  trayWindow.on('closed', () => {
+    trayWindow = null;
+  }); // For GC
+
+  // Get tray icon on every OS
+  const iconName = 'trayIcon.png';
+  const iconPath = path.join(__dirname, '../assets/', iconName);
+
+  const trayMenu = Menu.buildFromTemplate([
+    {label: 'Item1', type: 'radio'},
+    {label: 'Item2', type: 'radio'},
+    {label: 'Item3', type: 'radio', checked: true},
+    {label: 'Item4', type: 'radio'}
+  ]);
+
+  // Create Tray
+  tray = new Tray(iconPath);
+  tray.setToolTip('Todos');
+  tray.setContextMenu(trayMenu);
+
 };
 
 export const clearTodoList = () => {
