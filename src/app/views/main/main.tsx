@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import { ipcRenderer } from 'electron';
+import {TODOLIST_ADD, TODOLIST_CLEAR} from '../../utils/ipcCommands';
 
 export class Main extends React.Component<any, any> {
 
@@ -9,11 +10,11 @@ export class Main extends React.Component<any, any> {
   };
 
   componentDidMount() {
-    ipcRenderer.on('todo:add', (event: any, todo: any) => {
+    ipcRenderer.on(TODOLIST_ADD, (event: any, todo: any) => {
       this.addTodo(todo);
     });
 
-    ipcRenderer.on('todoList:clear', () => {
+    ipcRenderer.on(TODOLIST_CLEAR, () => {
       this.setState({
         todoList: []
       });

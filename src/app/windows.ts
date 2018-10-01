@@ -1,7 +1,8 @@
 import {app, BrowserWindow, Menu, ipcMain} from 'electron';
+import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 import {applicationMenuTemplate} from './menus/applicationMenu';
-import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
+import {TODOLIST_ADD, TODOLIST_CLEAR} from './utils/ipcCommands';
 
 // __dirname === /src/app/
 
@@ -24,7 +25,7 @@ export const createMainWindow = async () => {
 
   // Set mainMenu on mainWindow
   const mainMenu = Menu.buildFromTemplate(applicationMenuTemplate);
-  mainWindow.setMenu(mainMenu);
+  Menu.setApplicationMenu(mainMenu);
 
   // Open the DevTools.
   if (isDevMode) {
@@ -49,10 +50,10 @@ export const createMainWindow = async () => {
   });
 
   // Listen to addToDoWindow
-  ipcMain.on('todo:add', (event: any, todo: any) => {
+  ipcMain.on(TODOLIST_ADD, (event: any, todo: any) => {
     // Relay data to the mainWindow and close addTodoWindow
     if (todo && todo.length > 0) {
-      mainWindow!.webContents.send('todo:add', todo);
+      mainWindow!.webContents.send(TODOLIST_ADD, todo);
       addTodoWindow!.close();
       addTodoWindow = null; // For GC
     }
@@ -60,16 +61,25 @@ export const createMainWindow = async () => {
 };
 
 export const createAddTodoWindow = () => {
-  addTodoWindow = new BrowserWindow({
-    title: 'Add a new Todo',
-    width: 450,
-    height: 300
-  });
+  // If addTodoWindow already opened bring it to foreground and center it on the screen
+  if (addTodoWindow) {
+    addTodoWindow.focus();
+    addTodoWindow.center();
+
+    // Create new addTodoWindow
+  } else {
+    addTodoWindow = new BrowserWindow({
+      title: 'Add a new Todo',
+      width: 450,
+      height: 300
+    });
+    addTodoWindow.center();
+  }
 
   // Load addTodo content
   addTodoWindow.loadURL(`file://${__dirname}/views/addTodo/addTodo.html`);
 
-  // Open the DevTools.
+  // Open the DevTools
   if (isDevMode) {
     addTodoWindow.webContents.openDevTools();
   }
@@ -81,5 +91,5 @@ export const createAddTodoWindow = () => {
 };
 
 export const clearTodoList = () => {
-  mainWindow.webContents.send('todoList:clear', {});
+  mainWindow.webContents.send(TODOLIST_CLEAR, {});
 };
