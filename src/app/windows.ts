@@ -1,6 +1,6 @@
-import { app, BrowserWindow, Menu, ipcMain } from 'electron';
+import {app, BrowserWindow, Menu, ipcMain} from 'electron';
 
-import {menuTemplate} from './menu/menu';
+import {applicationMenuTemplate} from './menus/menu';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 // __dirname === /src/app/
@@ -23,7 +23,7 @@ export const createMainWindow = async () => {
   mainWindow.loadURL(`file://${__dirname}/views/main/main.html`);
 
   // Set mainMenu on mainWindow
-  const mainMenu = Menu.buildFromTemplate(menuTemplate);
+  const mainMenu = Menu.buildFromTemplate(applicationMenuTemplate);
   mainWindow.setMenu(mainMenu);
 
   // Open the DevTools.
@@ -75,7 +75,9 @@ export const createAddTodoWindow = () => {
   }
 
   // Emitted when the window is closed.
-  addTodoWindow.on('closed', () => { addTodoWindow = null; }); // For GC
+  addTodoWindow.on('closed', () => {
+    addTodoWindow = null;
+  }); // For GC
 };
 
 export const clearTodoList = () => {

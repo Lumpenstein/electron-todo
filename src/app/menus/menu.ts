@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import { createAddTodoWindow, clearTodoList } from '../windows';
 
-export const menuTemplate = [
+export const applicationMenuTemplate = [
   {
     label: 'File',
     submenu: [
@@ -34,14 +34,14 @@ export const menuTemplate = [
     ]
   }
 ];
-// Add an empty menu for macOs, else first entry gets merged in AppName menu
+// Add an empty menus for macOs, else first entry gets merged in AppName menus
 if (process.platform === 'darwin') {
   // @ts-ignore
-  menuTemplate.unshift({});
+  applicationMenuTemplate.unshift({});
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  menuTemplate.push({
+  applicationMenuTemplate.push({
       label: 'View',
       submenu: [
         {
