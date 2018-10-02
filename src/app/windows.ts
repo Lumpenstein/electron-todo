@@ -1,9 +1,10 @@
+import * as path from 'path';
 import {app, BrowserWindow, Menu, Tray, ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 import {applicationMenuTemplate} from './menus/applicationMenu';
+import {trayMenuTemplate} from './menus/trayMenu';
 import {TODOLIST_ADD, TODOLIST_CLEAR} from './utils/ipcCommands';
-import * as path from 'path';
 
 // __dirname === /src/app/
 
@@ -105,7 +106,8 @@ export const createTrayWindow = () => {
       width: 300,
       height: 100,
       frame: false,
-      resizable: false
+      resizable: false,
+      show: false
     });
   }
 
@@ -126,17 +128,21 @@ export const createTrayWindow = () => {
   const iconName = 'trayIcon.png';
   const iconPath = path.join(__dirname, '../assets/', iconName);
 
-  const trayMenu = Menu.buildFromTemplate([
-    {label: 'Item1', type: 'radio'},
-    {label: 'Item2', type: 'radio'},
-    {label: 'Item3', type: 'radio', checked: true},
-    {label: 'Item4', type: 'radio'}
-  ]);
+  const trayMenu = Menu.buildFromTemplate(trayMenuTemplate);
 
-  // Create Tray
+  // Create TrayIcon and set right-click menu
   tray = new Tray(iconPath);
   tray.setToolTip('Todos');
   tray.setContextMenu(trayMenu);
+
+  // Toggle visibility on left-click
+  tray.on('click', (event, bounds) => {
+    if (trayWindow) {
+      trayWindow.isVisible() ? trayWindow.hide() : trayWindow.show();
+    } else {
+      console.error('TrayWindow does not exist.')
+    }
+  });
 
 };
 
