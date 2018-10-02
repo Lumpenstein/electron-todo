@@ -3,8 +3,8 @@ import {app, BrowserWindow, Menu, Tray, ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 import {applicationMenuTemplate} from './menus/applicationMenu';
-import {trayMenuTemplate} from './menus/trayMenu';
-import {TODOLIST_ADD, TODOLIST_CLEAR} from './utils/ipcCommands';
+import {trayClickListener, trayMenuTemplate} from './menus/trayMenu';
+import {TODOLIST_ADD} from './utils/ipcCommands';
 
 // __dirname === /src/app/
 
@@ -96,9 +96,6 @@ export const createAddTodoWindow = () => {
 
 export const createTrayWindow = () => {
   // If addTodoWindow already opened bring it to foreground and center it on the screen
-  const positionX: number = 0;
-  const positionY: number = 0;
-
   if (trayWindow) {
     trayWindow.focus();
 
@@ -106,7 +103,7 @@ export const createTrayWindow = () => {
   } else {
     trayWindow = new BrowserWindow({
       title: 'Add a new Todo',
-      width: 600,
+      width: 300,
       height: 100,
       frame: false,
       resizable: false,
@@ -138,47 +135,9 @@ export const createTrayWindow = () => {
   tray.setToolTip('Todos');
   tray.setContextMenu(trayMenu);
 
-  // Toggle visibility on left-click
-  tray.on('click', (event, bounds) => {
-    console.log(bounds.x);
-    console.log(bounds.y);
-
-    const { x, y } = bounds;
-    const {height, width} = trayWindow.getBounds();
-    let windowX: number = 0;
-    let windowY: number = 0;
-
-    // Calculate window position depending on OS
-    if (process.platform === 'darwin') {
-      windowX = x - width / 2;
-      windowY = y;
-    } else {
-      windowX = x;
-      windowY = y - height;
-    };
-
-
-    if (trayWindow) {
-      if (trayWindow.isVisible()) {
-        trayWindow.hide();
-
-      } else {
-
-        trayWindow.setBounds({
-          x: windowX,
-          y: windowY,
-          height: height,
-          width: width
-        });
-        trayWindow.show();
-      }
-    } else {
-      console.error('TrayWindow does not exist.');
-    }
-  });
+  // Tray Icon click listener
+  tray.on('click', (event, bounds) => trayClickListener(event, bounds));
 
 };
 
-export const clearTodoList = () => {
-  mainWindow.webContents.send(TODOLIST_CLEAR, {});
-};
+

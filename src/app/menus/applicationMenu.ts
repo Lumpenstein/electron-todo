@@ -1,5 +1,6 @@
 import {app} from 'electron';
-import {createAddTodoWindow, clearTodoList, createTrayWindow} from '../windows';
+import {createAddTodoWindow, createTrayWindow, mainWindow} from '../windows';
+import {TODOLIST_CLEAR} from '../utils/ipcCommands';
 
 export const applicationMenuTemplate = [
   {
@@ -66,3 +67,7 @@ if (process.env.NODE_ENV !== 'production') {
     }
   );
 }
+
+const clearTodoList = () => {
+  mainWindow.webContents.send(TODOLIST_CLEAR, {});
+};
