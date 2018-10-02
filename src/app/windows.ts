@@ -3,8 +3,8 @@ import {app, BrowserWindow, Menu, Tray, ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 import {applicationMenuTemplate} from './menus/applicationMenu';
-import {trayClickListener, trayMenuTemplate} from './menus/trayMenu';
 import {TODOLIST_ADD} from './utils/ipcCommands';
+import CustomTray from './CustomTray';
 
 // __dirname === /src/app/
 
@@ -13,7 +13,7 @@ import {TODOLIST_ADD} from './utils/ipcCommands';
 export let mainWindow: Electron.BrowserWindow | null = null;
 export let addTodoWindow: Electron.BrowserWindow | null = null;
 export let trayWindow: Electron.BrowserWindow | null = null;
-export let tray: Electron.Tray | null = null;
+export let tray: CustomTray | null = null;
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 
@@ -128,16 +128,6 @@ export const createTrayWindow = () => {
   const iconName = 'trayIcon.png';
   const iconPath = path.join(__dirname, '../assets/', iconName);
 
-  const trayMenu = Menu.buildFromTemplate(trayMenuTemplate);
-
   // Create TrayIcon and set right-click menu
-  tray = new Tray(iconPath);
-  tray.setToolTip('Todos');
-  tray.setContextMenu(trayMenu);
-
-  // Tray Icon click listener
-  tray.on('click', (event, bounds) => trayClickListener(event, bounds));
-
+  tray = new CustomTray({iconPath: iconPath, trayWindow: trayWindow});
 };
-
-
