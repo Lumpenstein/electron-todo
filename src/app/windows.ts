@@ -1,64 +1,48 @@
 import * as path from 'path';
-import {app, BrowserWindow, Menu, Tray, ipcMain} from 'electron';
+import {app, Menu, ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
-import {applicationMenuTemplate} from './menus/applicationMenu';
+import {MainWindow , TrayWindow, AddTodoWindow, CustomTray} from './views/index';
+import {applicationMenuTemplate, trayMenuTemplate} from './menus/index';
 import {TODOLIST_ADD} from './utils/ipcCommands';
-import CustomTray from './CustomTray';
 
 // __dirname === /src/app/
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-export let mainWindow: Electron.BrowserWindow | null = null;
-export let addTodoWindow: Electron.BrowserWindow | null = null;
-export let trayWindow: Electron.BrowserWindow | null = null;
+export let mainWindow: MainWindow | null = null;
+export let addTodoWindow: AddTodoWindow | null = null;
+export let trayWindow: TrayWindow | null = null;
 export let tray: CustomTray | null = null;
 
 const isDevMode = process.execPath.match(/[\\/]electron/);
 
 export const createMainWindow = async () => {
-  // Create the browser window.
-  mainWindow = new BrowserWindow({
+  // Create the main window.
+  mainWindow = new MainWindow({
     width: 600,
-    height: 800
+    height: 800,
+    url: `file://${__dirname}/views/main/main.html`,
+    useApplicationMenu: true,
+    menuTemplate: applicationMenuTemplate,
+    isDevMode: isDevMode,
+    closeWindows: [addTodoWindow],
+    closeApp: true,
+    mainWindow: mainWindow
   });
 
-  // and load the main.html of the app.
-  mainWindow.loadURL(`file://${__dirname}/views/main/main.html`);
-
-  // Set mainMenu on mainWindow
-  const mainMenu = Menu.buildFromTemplate(applicationMenuTemplate);
-  Menu.setApplicationMenu(mainMenu);
-
-  // Open the DevTools.
+  // Install and open the DevTools.
   if (isDevMode) {
     await installExtension(REACT_DEVELOPER_TOOLS);
     mainWindow.webContents.openDevTools();
   }
 
-  // Emitted when the window is closed.
-  mainWindow.on('closed', () => {
-    // Close other windows
-    if (addTodoWindow) {
-      addTodoWindow.close();
-    }
-
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
-    mainWindow = null; // For GC
-
-    // Close app if mainWindow closed
-    app.quit();
-  });
-
   // Listen to addToDoWindow
   ipcMain.on(TODOLIST_ADD, (event: any, todo: any) => {
-    // Relay data to the mainWindow and close addTodoWindow
     if (todo && todo.length > 0) {
-      mainWindow!.webContents.send(TODOLIST_ADD, todo);
-      addTodoWindow!.close();
+      // Relay data to the mainWindow and close addTodoWindow
+      mainWindow.webContents.send(TODOLIST_ADD, todo);
+      addTodoWindow.close();
       addTodoWindow = null; // For GC
     }
   });
@@ -72,62 +56,49 @@ export const createAddTodoWindow = () => {
 
     // Create new addTodoWindow
   } else {
-    addTodoWindow = new BrowserWindow({
+    addTodoWindow = new AddTodoWindow({
       title: 'Add a new Todo',
       width: 450,
-      height: 300
+      height: 300,
+      url: `file://${__dirname}/views/addTodo/addTodo.html`,
+      addTodoWindow: addTodoWindow
     });
     addTodoWindow.center();
   }
-
-  // Load addTodo content
-  addTodoWindow.loadURL(`file://${__dirname}/views/addTodo/addTodo.html`);
 
   // Open the DevTools
   if (isDevMode) {
     addTodoWindow.webContents.openDevTools();
   }
-
-  // Emitted when the window is closed.
-  addTodoWindow.on('closed', () => {
-    addTodoWindow = null;
-  }); // For GC
 };
 
 export const createTrayWindow = () => {
   // If addTodoWindow already opened bring it to foreground and center it on the screen
   if (trayWindow) {
     trayWindow.focus();
-
     // Create new trayWindow
   } else {
-    trayWindow = new BrowserWindow({
+    trayWindow = new TrayWindow({
       title: 'Add a new Todo',
       width: 300,
       height: 100,
       frame: false,
       resizable: false,
-      show: false
+      show: false,
+      url: `file://${__dirname}/views/tray/tray.html`,
+      trayWindow: trayWindow
     });
   }
-
-  // Load addTodo content
-  trayWindow.loadURL(`file://${__dirname}/views/tray/tray.html`);
-
-  // Open the DevTools
-  // if (isDevMode) {
-  //   trayWindow.webContents.openDevTools();
-  // }
-
-  // Emitted when the window is closed.
-  trayWindow.on('closed', () => {
-    trayWindow = null;
-  }); // For GC
 
   // Get tray icon on every OS
   const iconName = 'trayIcon.png';
   const iconPath = path.join(__dirname, '../assets/', iconName);
 
   // Create TrayIcon and set right-click menu
-  tray = new CustomTray({iconPath: iconPath, trayWindow: trayWindow});
+  tray = new CustomTray({
+    iconPath: iconPath,
+    trayWindow: trayWindow,
+    tooltip: 'Todos',
+    trayMenuTemplate: trayMenuTemplate
+  });
 };

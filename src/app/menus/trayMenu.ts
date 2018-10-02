@@ -1,5 +1,3 @@
-import {trayWindow} from '../windows';
-
 export const trayMenuTemplate = [
   {
     label: 'Item1',

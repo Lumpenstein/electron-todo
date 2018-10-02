@@ -1,5 +1,4 @@
 import { Tray, Menu } from 'electron';
-import {trayMenuTemplate} from './menus/trayMenu';
 
 export default class CustomTray extends Tray {
 
@@ -13,11 +12,11 @@ export default class CustomTray extends Tray {
     // Tray Icon click listener
     this.on('click', this.onClick);
 
-    const trayMenu = Menu.buildFromTemplate(trayMenuTemplate);
+    this.setToolTip(options.tooltip);
 
-    this.setToolTip('Todos');
+    // Create and set context (right click) menu
+    const trayMenu = Menu.buildFromTemplate(options.trayMenuTemplate);
     this.setContextMenu(trayMenu);
-
   }
 
   onClick(event, bounds){
@@ -41,7 +40,7 @@ const trayClickListener = (event, bounds, trayWindow) => {
     windowY = y - height;
   };
 
-  // Toggle visibility on left-click
+  // Position and toggle visibility on left-click
   if (trayWindow) {
     if (trayWindow.isVisible()) {
       trayWindow.hide();
