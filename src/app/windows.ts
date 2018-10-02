@@ -96,6 +96,9 @@ export const createAddTodoWindow = () => {
 
 export const createTrayWindow = () => {
   // If addTodoWindow already opened bring it to foreground and center it on the screen
+  const positionX: number = 0;
+  const positionY: number = 0;
+
   if (trayWindow) {
     trayWindow.focus();
 
@@ -103,7 +106,7 @@ export const createTrayWindow = () => {
   } else {
     trayWindow = new BrowserWindow({
       title: 'Add a new Todo',
-      width: 300,
+      width: 600,
       height: 100,
       frame: false,
       resizable: false,
@@ -137,10 +140,40 @@ export const createTrayWindow = () => {
 
   // Toggle visibility on left-click
   tray.on('click', (event, bounds) => {
-    if (trayWindow) {
-      trayWindow.isVisible() ? trayWindow.hide() : trayWindow.show();
+    console.log(bounds.x);
+    console.log(bounds.y);
+
+    const { x, y } = bounds;
+    const {height, width} = trayWindow.getBounds();
+    let windowX: number = 0;
+    let windowY: number = 0;
+
+    // Calculate window position depending on OS
+    if (process.platform === 'darwin') {
+      windowX = x - width / 2;
+      windowY = y;
     } else {
-      console.error('TrayWindow does not exist.')
+      windowX = x;
+      windowY = y - height;
+    };
+
+
+    if (trayWindow) {
+      if (trayWindow.isVisible()) {
+        trayWindow.hide();
+
+      } else {
+
+        trayWindow.setBounds({
+          x: windowX,
+          y: windowY,
+          height: height,
+          width: width
+        });
+        trayWindow.show();
+      }
+    } else {
+      console.error('TrayWindow does not exist.');
     }
   });
 
