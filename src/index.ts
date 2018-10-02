@@ -1,7 +1,7 @@
 import { app } from 'electron';
 import {enableLiveReload} from 'electron-compile';
 
-import {createMainWindow, mainWindow} from './app/windows';
+import {createMainWindow, mainWindow} from './app/app';
 
 // Could also use process.env.NODE_ENV to determine if production/development/test/staging
 const isDevMode = process.execPath.match(/[\\/]electron/);

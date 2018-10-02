@@ -1,5 +1,5 @@
 import {app} from 'electron';
-import {createAddTodoWindow, createTrayWindow, mainWindow} from '../windows';
+import {createAddTodoWindow, createTrayWindow, mainWindow} from '../app';
 import {TODOLIST_CLEAR} from '../utils/ipcCommands';
 
 export const applicationMenuTemplate = [
