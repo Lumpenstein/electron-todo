@@ -2,7 +2,7 @@ import {app} from 'electron';
 import {createAddTodoWindow, createTrayWindow, mainWindow} from '../app';
 import {TODOLIST_CLEAR} from '../utils/ipcCommands';
 
-export const applicationMenuTemplate = [
+export const applicationMenuTemplate: Electron.MenuItemConstructorOptions[] = [
   {
     label: 'File',
     submenu: [
@@ -56,8 +56,8 @@ if (process.env.NODE_ENV !== 'production') {
         },
         {
           label: 'Toggle DevTools',
-          click(item, focusedWindow) {
-            focusedWindow.toggleDevTools();
+          click({} /* item: Electron.Item */, focusedWindow: Electron.BrowserWindow) {
+            focusedWindow.webContents.toggleDevTools();
           },
           accelerator: (() => {
             return 'Ctrl+I';
@@ -69,5 +69,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 
 const clearTodoList = () => {
-  mainWindow.webContents.send(TODOLIST_CLEAR, {});
+  if (mainWindow) {
+    mainWindow!.webContents.send(TODOLIST_CLEAR, {});
+  }
 };

@@ -65,6 +65,8 @@ export const createAddTodoWindow = () => {
       height: 300,
       url: `file://${__dirname}/views/addTodo/addTodo.html`,
       menuTemplate: [],
+      parent: mainWindow as Electron.BrowserWindow,
+      modal: true,
       addTodoWindow: addTodoWindow
     });
     if (addTodoWindow) {

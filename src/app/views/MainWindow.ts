@@ -35,9 +35,8 @@ export default class MainWindow extends BrowserWindow {
 
   onClosed(closeWindows: Electron.BrowserWindow[], closeApp: boolean) {
     // Close other windows
-    for (let window in closeWindows) {
+    for (let window of closeWindows) {
       if (window) {
-        console.log(typeof window);
         window.close();
       }
     }
