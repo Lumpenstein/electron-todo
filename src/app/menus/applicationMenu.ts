@@ -1,7 +1,8 @@
-import { app } from 'electron';
-import { createAddTodoWindow, clearTodoList } from '../windows';
+import {app} from 'electron';
+import {createAddTodoWindow, createTrayWindow, mainWindow} from '../app';
+import {TODOLIST_CLEAR} from '../utils/ipcCommands';
 
-export const menuTemplate = [
+export const applicationMenuTemplate: Electron.MenuItemConstructorOptions[] = [
   {
     label: 'File',
     submenu: [
@@ -18,6 +19,12 @@ export const menuTemplate = [
         }
       },
       {
+        label: 'Launch Tray service',
+        click() {
+          createTrayWindow();
+        }
+      },
+      {
         label: 'Quit',
         accelerator: (() => {
           if (process.platform === 'darwin') {
@@ -25,7 +32,7 @@ export const menuTemplate = [
           } else if (process.platform === 'win32') {
             return 'Ctrl+Q';
           }
-          return'Ctrl+Q';
+          return 'Ctrl+Q';
         })(),
         click() {
           app.quit();
@@ -34,14 +41,14 @@ export const menuTemplate = [
     ]
   }
 ];
-// Add an empty menu for macOs, else first entry gets merged in AppName menu
+// Add an empty menus for macOs, else first entry gets merged in AppName menus
 if (process.platform === 'darwin') {
   // @ts-ignore
-  menuTemplate.unshift({});
+  applicationMenuTemplate.unshift({});
 }
 
 if (process.env.NODE_ENV !== 'production') {
-  menuTemplate.push({
+  applicationMenuTemplate.push({
       label: 'View',
       submenu: [
         {
@@ -49,14 +56,20 @@ if (process.env.NODE_ENV !== 'production') {
         },
         {
           label: 'Toggle DevTools',
-          click(item, focusedWindow) {
-            focusedWindow.toggleDevTools();
+          click({} /* item: Electron.Item */, focusedWindow: Electron.BrowserWindow) {
+            focusedWindow.webContents.toggleDevTools();
           },
           accelerator: (() => {
-            return'Ctrl+I';
+            return 'Ctrl+I';
           })(),
         }
       ]
     }
   );
 }
+
+const clearTodoList = () => {
+  if (mainWindow) {
+    mainWindow!.webContents.send(TODOLIST_CLEAR, {});
+  }
+};

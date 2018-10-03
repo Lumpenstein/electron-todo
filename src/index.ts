@@ -1,7 +1,7 @@
 import { app } from 'electron';
-import { enableLiveReload } from 'electron-compile';
+import {enableLiveReload} from 'electron-compile';
 
-import { createMainWindow, mainWindow } from './app/windows';
+import {createMainWindow, mainWindow} from './app/app';
 
 // Could also use process.env.NODE_ENV to determine if production/development/test/staging
 const isDevMode = process.execPath.match(/[\\/]electron/);
@@ -16,7 +16,7 @@ app.on('ready', createMainWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
-  // On OS X it is common for applications and their menu bar
+  // On OS X it is common for applications and their menus bar
   // to stay active until the user quits explicitly with Cmd + Q
   if (process.platform !== 'darwin') {
     app.quit();
