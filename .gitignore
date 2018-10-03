@@ -1,3 +1,9 @@
+# Ignore filders
 node_modules
 out
 /.idea
+
+# Ignore generated files
+*.d.ts
+*.js
+*.js.map

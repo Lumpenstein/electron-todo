@@ -1,10 +1,19 @@
-import {app, BrowserWindow, Menu, ipcMain} from 'electron';
+import {app, BrowserWindow, Menu} from 'electron';
+
+export interface MainWindowConstructorOptions extends Electron.BrowserWindowConstructorOptions {
+  url: string;
+  useApplicationMenu: boolean;
+  menuTemplate: Electron.MenuItemConstructorOptions[];
+  closeWindows: Electron.BrowserWindow[] | any[];
+  closeApp: boolean;
+  mainWindow: MainWindow | null;
+}
 
 export default class MainWindow extends BrowserWindow {
 
   private mainWindow: MainWindow | null;
 
-  constructor(options) {
+  constructor(options: MainWindowConstructorOptions) {
     super(options);
 
     this.mainWindow = options.mainWindow;
@@ -16,18 +25,19 @@ export default class MainWindow extends BrowserWindow {
     if (options.useApplicationMenu) {
       Menu.setApplicationMenu(mainMenu);
     } else {
-      console.warn("individual menus not yet implemented")
-      // Todo Use
+      console.warn('individual menus not yet implemented');
+      // Todo Use mainWindow.setMenu...
     }
 
     // Emitted when the window is closed.
-    this.on('closed', () => this.onCLosed(options.closeWindows, options.closeApp)); // For GC
+    this.on('closed', () => this.onClosed(options.closeWindows, options.closeApp)); // For GC
   }
 
-  onCLosed(closeWindows, closeApp) {
+  onClosed(closeWindows: Electron.BrowserWindow[], closeApp: boolean) {
     // Close other windows
-    for(let window in this.closeWindows) {
+    for (let window in closeWindows) {
       if (window) {
+        console.log(typeof window);
         window.close();
       }
     }

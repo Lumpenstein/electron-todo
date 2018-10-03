@@ -1,10 +1,16 @@
 import {BrowserWindow} from 'electron';
 
+export interface AddTodoWindowConstructorOptions extends Electron.BrowserWindowConstructorOptions{
+  url: string;
+  menuTemplate: Electron.MenuItemConstructorOptions[];
+  addTodoWindow: AddTodoWindow | null;
+}
+
 export default class AddTodoWindow extends BrowserWindow {
 
   private addTodoWindow: AddTodoWindow | null;
 
-  constructor(options) {
+  constructor(options: AddTodoWindowConstructorOptions) {
     super(options);
 
     this.addTodoWindow = options.addTodoWindow;
@@ -13,10 +19,10 @@ export default class AddTodoWindow extends BrowserWindow {
     this.loadURL(options.url);
 
     // Emitted when the window is closed.
-    this.on('closed', this.onCLosed); // For GC
+    this.on('closed', this.onClosed); // For GC
   }
 
-  onCLosed() {
+  onClosed() {
     this.addTodoWindow = null;
   }
 

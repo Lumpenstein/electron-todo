@@ -1,4 +1,4 @@
-export const trayMenuTemplate = [
+export const trayContextMenuTemplate: Electron.MenuItemConstructorOptions[] = [
   {
     label: 'Item1',
     type: 'radio'

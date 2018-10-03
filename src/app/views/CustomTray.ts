@@ -1,10 +1,18 @@
 import { Tray, Menu } from 'electron';
+import TrayWindow from './TrayWindow';
+
+export interface CustomTrayConstructorOptions {
+  iconPath: string;
+  tooltip: string;
+  contextMenuTemplate: Electron.MenuItemConstructorOptions[];
+  trayWindow: TrayWindow | null;
+}
 
 export default class CustomTray extends Tray {
 
-  private trayWindow: Electron.BrowserWindow;
+  private trayWindow: TrayWindow | null;
 
-  constructor(options) {
+  constructor(options: CustomTrayConstructorOptions) {
     super(options.iconPath);
 
     this.trayWindow = options.trayWindow;
@@ -15,36 +23,37 @@ export default class CustomTray extends Tray {
     this.setToolTip(options.tooltip);
 
     // Create and set context (right click) menu
-    const trayMenu = Menu.buildFromTemplate(options.trayMenuTemplate);
+    const trayMenu = Menu.buildFromTemplate(options.contextMenuTemplate);
     this.setContextMenu(trayMenu);
   }
 
-  onClick(event, bounds){
+  onClick(event: Electron.Event, bounds: Electron.Rectangle) {
     trayClickListener(event, bounds, this.trayWindow);
   }
 }
 
-const trayClickListener = (event, bounds, trayWindow) => {
-
-  // Calculate window position depending on OS
-  const { x, y } = bounds;
-  const {height, width} = trayWindow.getBounds();
-  let windowX: number = 0;
-  let windowY: number = 0;
-
-  if (process.platform === 'darwin') {
-    windowX = x - width / 2;
-    windowY = y;
-  } else {
-    windowX = x;
-    windowY = y - height;
-  };
-
-  // Position and toggle visibility on left-click
+const trayClickListener = ({} /* event */, bounds: Electron.Rectangle, trayWindow: TrayWindow | null) => {
+    // Position and toggle visibility on left-click
   if (trayWindow) {
+
     if (trayWindow.isVisible()) {
       trayWindow.hide();
+
     } else {
+      // Calculate window position depending on OS
+      const { x, y } = bounds;
+      const {height, width} = trayWindow.getBounds();
+      let windowX: number = 0;
+      let windowY: number = 0;
+
+      if (process.platform === 'darwin') {
+        windowX = x - width / 2;
+        windowY = y;
+      } else {
+        windowX = x;
+        windowY = y - height;
+      }
+
       trayWindow.setBounds({
         x: windowX,
         y: windowY,
@@ -57,4 +66,3 @@ const trayClickListener = (event, bounds, trayWindow) => {
     console.error('TrayWindow does not exist.');
   }
 };
-

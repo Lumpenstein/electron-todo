@@ -1,7 +1,7 @@
 import {applicationMenuTemplate} from './applicationMenu';
-import {trayMenuTemplate} from './trayMenu';
+import {trayContextMenuTemplate} from './trayMenu';
 
 export {
   applicationMenuTemplate,
-  trayMenuTemplate
+  trayContextMenuTemplate
 }

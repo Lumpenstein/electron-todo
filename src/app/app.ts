@@ -1,9 +1,9 @@
 import * as path from 'path';
-import {app, Menu, ipcMain} from 'electron';
+import {ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
 import {MainWindow , TrayWindow, AddTodoWindow, CustomTray} from './views/index';
-import {applicationMenuTemplate, trayMenuTemplate} from './menus/index';
+import {applicationMenuTemplate, trayContextMenuTemplate} from './menus/index';
 import {TODOLIST_ADD} from './utils/ipcCommands';
 
 // __dirname === /src/app/
@@ -25,7 +25,6 @@ export const createMainWindow = async () => {
     url: `file://${__dirname}/views/main/main.html`,
     useApplicationMenu: true,
     menuTemplate: applicationMenuTemplate,
-    isDevMode: isDevMode,
     closeWindows: [addTodoWindow],
     closeApp: true,
     mainWindow: mainWindow
@@ -38,12 +37,16 @@ export const createMainWindow = async () => {
   }
 
   // Listen to addToDoWindow
-  ipcMain.on(TODOLIST_ADD, (event: any, todo: any) => {
+  ipcMain.on(TODOLIST_ADD, ({} /* event */ , todo: any) => {
     if (todo && todo.length > 0) {
       // Relay data to the mainWindow and close addTodoWindow
-      mainWindow.webContents.send(TODOLIST_ADD, todo);
-      addTodoWindow.close();
-      addTodoWindow = null; // For GC
+      if (mainWindow) {
+        mainWindow.webContents.send(TODOLIST_ADD, todo);
+      }
+      if (addTodoWindow) {
+        addTodoWindow.close();
+        addTodoWindow = null; // For GC
+      }
     }
   });
 };
@@ -61,13 +64,16 @@ export const createAddTodoWindow = () => {
       width: 450,
       height: 300,
       url: `file://${__dirname}/views/addTodo/addTodo.html`,
+      menuTemplate: [],
       addTodoWindow: addTodoWindow
     });
-    addTodoWindow.center();
+    if (addTodoWindow) {
+      addTodoWindow.center();
+    }
   }
 
   // Open the DevTools
-  if (isDevMode) {
+  if (isDevMode && addTodoWindow) {
     addTodoWindow.webContents.openDevTools();
   }
 };
@@ -99,6 +105,6 @@ export const createTrayWindow = () => {
     iconPath: iconPath,
     trayWindow: trayWindow,
     tooltip: 'Todos',
-    trayMenuTemplate: trayMenuTemplate
+    contextMenuTemplate: trayContextMenuTemplate
   });
 };

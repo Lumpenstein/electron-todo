@@ -1,10 +1,15 @@
 import {BrowserWindow} from 'electron';
 
+export interface TrayWindowOptions extends Electron.BrowserWindowConstructorOptions {
+  url: string;
+  trayWindow: TrayWindow | null;
+}
+
 export default class TrayWindow extends BrowserWindow {
 
   private trayWindow: TrayWindow | null;
 
-  constructor(options) {
+  constructor(options: TrayWindowOptions) {
     super(options);
 
     this.trayWindow = options.trayWindow;
@@ -13,10 +18,10 @@ export default class TrayWindow extends BrowserWindow {
     this.loadURL(options.url);
 
     // Emitted when the window is closed.
-    this.on('closed', this.onCLosed); // For GC
+    this.on('closed', this.onClosed); // For GC
   }
 
-  onCLosed() {
+  onClosed() {
     this.trayWindow = null;
   }
 
