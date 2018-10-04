@@ -16,6 +16,7 @@ export let addTaskWindow: AddTaskWindow | null = null;
 export let trayWindow: TrayWindow | null = null;
 export let tray: CustomTray | null = null;
 
+// Could also use the env variable process.env
 const isDevMode = process.execPath.match(/[\\/]electron/);
 
 export const createMainWindow = async () => {
