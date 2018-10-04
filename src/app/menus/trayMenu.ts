@@ -1,7 +1,10 @@
 export const trayContextMenuTemplate: Electron.MenuItemConstructorOptions[] = [
   {
-    label: 'Item1',
-    type: 'radio'
+    label: 'Quit',
+    type: 'normal',
+    click() {
+      console.log("quit")
+    }
   },
   {
     label: 'Item2',

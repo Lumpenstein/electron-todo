@@ -30,17 +30,17 @@ export default class CustomTray extends Tray {
 
   onLeftClick(event: Electron.Event, bounds: Electron.Rectangle) {
     console.log('left click');
-    trayClickListener(event, bounds, this.trayWindow);
+    toggleTrayWindowVisibility(event, bounds, this.trayWindow);
   }
 
   onRightClick(event: Electron.Event, bounds: Electron.Rectangle) {
     console.log('right click');
-    trayClickListener(event, bounds, this.trayWindow);
+    toggleTrayWindowVisibility(event, bounds, this.trayWindow);
   }
 }
 
-const trayClickListener = (_event: Electron.Event, bounds: Electron.Rectangle, trayWindow: TrayWindow | null) => {
-    // Position and toggle visibility on left-click
+const toggleTrayWindowVisibility = ({} /* event */, bounds: Electron.Rectangle, trayWindow: TrayWindow | null) => {
+  // Position and toggle visibility on left-click
   if (trayWindow) {
 
     if (trayWindow.isVisible()) {
