@@ -18,7 +18,7 @@ export default class TrayWindow extends BrowserWindow {
     this.loadURL(options.url);
 
     // Emitted when the window is closed.
-    this.on('closed', this.onClosed); // For GC
+    this.on('closed', this.onClosed.bind(this)); // For GC
   }
 
   onClosed() {

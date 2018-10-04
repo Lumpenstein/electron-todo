@@ -30,7 +30,7 @@ export default class MainWindow extends BrowserWindow {
     }
 
     // Emitted when the window is closed.
-    this.on('closed', () => this.onClosed(options.closeWindows, options.closeApp)); // For GC
+    this.on('closed', () => this.onClosed.bind(this, options.closeWindows, options.closeApp)); // For GC
   }
 
   onClosed(closeWindows: Electron.BrowserWindow[], closeApp: boolean) {

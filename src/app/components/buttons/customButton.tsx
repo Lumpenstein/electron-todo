@@ -1,8 +1,6 @@
 import * as React from 'react';
-import {extends} from 'tslint/lib/configs/latest';
 
-export default class CustomButton extends React.PureComponent {
-
+export default class CustomButton extends React.PureComponent<any, any> {
 
   render() {
     return (
@@ -12,4 +10,3 @@ export default class CustomButton extends React.PureComponent {
     );
   }
 }
-
