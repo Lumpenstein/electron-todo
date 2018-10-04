@@ -18,11 +18,17 @@ export default class TrayWindow extends BrowserWindow {
     this.loadURL(options.url);
 
     // Emitted when the window is closed.
-    this.on('closed', this.onClosed.bind(this)); // For GC
+    this.on('closed', this.onClosed.bind(this)); // For
+
+    this.on('blur', this.onBlur.bind(this)); // For GC
   }
 
   onClosed() {
     this.trayWindow = null;
+  }
+
+  onBlur() {
+    this.hide()
   }
 
 }
