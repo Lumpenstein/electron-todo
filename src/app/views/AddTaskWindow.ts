@@ -24,7 +24,7 @@ export default class AddTaskWindow extends BrowserWindow {
     });
 
     // Emitted when the window is closed.
-    this.on('closed', this.onClosed); // For GC
+    this.on('closed', this.onClosed.bind(this)); // For GC
   }
 
   onClosed() {

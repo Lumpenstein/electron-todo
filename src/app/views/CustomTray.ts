@@ -18,8 +18,8 @@ export default class CustomTray extends Tray {
     this.trayWindow = options.trayWindow;
 
     // Tray Icon click listener
-    this.on('click', this.onLeftClick);
-    this.on('right-click', this.onRightClick);
+    this.on('click', this.onLeftClick.bind(this));
+    this.on('right-click', this.onRightClick.bind(this));
 
     this.setToolTip(options.tooltip);
 
