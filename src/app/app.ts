@@ -27,14 +27,14 @@ export const createMainWindow = async () => {
     useApplicationMenu: true,
     menuTemplate: applicationMenuTemplate,
     closeWindows: [addTaskWindow],
-    closeApp: true,
+    closeApp: false,
     mainWindow: mainWindow
   });
 
   // Install and open the DevTools.
   if (isDevMode) {
     await installExtension(REACT_DEVELOPER_TOOLS);
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   }
 
   // Listen to addTaskWindow
@@ -81,7 +81,7 @@ export const createAddTaskWindow = () => {
 
   // Open the DevTools
   if (isDevMode && addTaskWindow) {
-    addTaskWindow.webContents.openDevTools();
+    // addTaskWindow.webContents.openDevTools();
   }
 };
 

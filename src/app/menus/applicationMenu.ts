@@ -13,9 +13,9 @@ export const applicationMenuTemplate: Electron.MenuItemConstructorOptions[] = [
         }
       },
       {
-        label: 'Clear Todos',
+        label: 'Clear Tasks',
         click() {
-          clearTodoList();
+          clearTaskList();
         }
       },
       {
@@ -68,7 +68,7 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 
-const clearTodoList = () => {
+const clearTaskList = () => {
   if (mainWindow) {
     mainWindow!.webContents.send(TASK_LIST_CLEAR, {});
   }
