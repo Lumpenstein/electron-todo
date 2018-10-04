@@ -1,5 +1,5 @@
 import { Tray, Menu } from 'electron';
-import TrayWindow from './TrayWindow';
+import TrayWindow from '../windows/TrayWindow';
 
 export interface CustomTrayConstructorOptions {
   iconPath: string;

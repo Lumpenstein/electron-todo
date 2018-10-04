@@ -2,12 +2,11 @@ import * as path from 'path';
 import {ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
-import {MainWindow , TrayWindow, AddTaskWindow, CustomTray} from './views/index';
+import {MainWindow , TrayWindow, AddTaskWindow} from './windows/index';
+import {CustomTray} from './tray/index';
 import {applicationMenuTemplate, trayContextMenuTemplate} from './menus/index';
-import {TASK_LIST_ADD} from './utils/ipcCommands';
-import Task from './views/Task';
-
-// __dirname === /src/app/
+import {TASK_LIST_ADD} from '../src/app/utils/ipcCommands';
+import Task from './windows/Task';
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -20,11 +19,12 @@ export let tray: CustomTray | null = null;
 const isDevMode = process.execPath.match(/[\\/]electron/);
 
 export const createMainWindow = async () => {
+  console.log(__dirname);
   // Create the main window.
   mainWindow = new MainWindow({
     width: 600,
     height: 800,
-    url: `file://${__dirname}/views/main/main.html`,
+    url: `file://${__dirname}/../src/app/views/main/main.html`,
     useApplicationMenu: true,
     menuTemplate: applicationMenuTemplate,
     closeWindows: [addTaskWindow],
@@ -69,7 +69,7 @@ export const createAddTaskWindow = () => {
       title: 'Add a new TaskObject',
       width: 450,
       height: 300,
-      url: `file://${__dirname}/views/addTask/addTask.html`,
+      url: `file://${__dirname}/../src/app/views/addTask/addTask.html`,
       menuTemplate: [],
       parent: mainWindow as Electron.BrowserWindow,
       modal: true,
@@ -99,14 +99,14 @@ export const createTrayWindow = () => {
       frame: false,
       resizable: false,
       show: false,
-      url: `file://${__dirname}/views/tray/tray.html`,
+      url: `file://${__dirname}/../src/app/views/tray/tray.html`,
       trayWindow: trayWindow
     });
   }
 
   // Get tray icon on every OS
   const iconName = 'trayIcon.png';
-  const iconPath = path.join(__dirname, '../assets/', iconName);
+  const iconPath = path.join(__dirname, '../src/assets/', iconName);
 
   // Create TrayIcon and set right-click menu
   tray = new CustomTray({

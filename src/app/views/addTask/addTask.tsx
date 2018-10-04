@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import { ipcRenderer } from 'electron';
 import {TASK_LIST_ADD} from '../../utils/ipcCommands';
-import Task from '../Task';
+import Task from '../../../../app/windows/Task';
 
 export class AddTask extends React.Component<any, any> {
 

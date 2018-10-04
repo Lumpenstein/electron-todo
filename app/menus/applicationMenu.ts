@@ -1,6 +1,6 @@
 import {app} from 'electron';
 import {createAddTaskWindow, createTrayWindow, mainWindow} from '../app';
-import {TASK_LIST_CLEAR} from '../utils/ipcCommands';
+import {TASK_LIST_CLEAR} from '../../src/app/utils/ipcCommands';
 
 export const applicationMenuTemplate: Electron.MenuItemConstructorOptions[] = [
   {
