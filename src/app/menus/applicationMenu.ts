@@ -10,19 +10,28 @@ export const applicationMenuTemplate: Electron.MenuItemConstructorOptions[] = [
         label: 'New TaskObject',
         click() {
           createAddTaskWindow();
-        }
+        },
+        accelerator: (() => {
+          return 'Ctrl+N';
+        })()
       },
       {
         label: 'Clear Tasks',
         click() {
           clearTaskList();
-        }
+        },
+        accelerator: (() => {
+          return 'Ctrl+C';
+        })()
       },
       {
         label: 'Launch Tray service',
         click() {
           createTrayWindow();
-        }
+        },
+        accelerator: (() => {
+          return 'Ctrl+T';
+        })()
       },
       {
         label: 'Quit',
