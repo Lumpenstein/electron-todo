@@ -18,7 +18,8 @@ export default class CustomTray extends Tray {
     this.trayWindow = options.trayWindow;
 
     // Tray Icon click listener
-    this.on('click', this.onClick);
+    this.on('click', this.onLeftClick);
+    this.on('right-click', this.onRightClick);
 
     this.setToolTip(options.tooltip);
 
@@ -27,7 +28,13 @@ export default class CustomTray extends Tray {
     this.setContextMenu(trayMenu);
   }
 
-  onClick(event: Electron.Event, bounds: Electron.Rectangle) {
+  onLeftClick(event: Electron.Event, bounds: Electron.Rectangle) {
+    console.log('left click');
+    trayClickListener(event, bounds, this.trayWindow);
+  }
+
+  onRightClick(event: Electron.Event, bounds: Electron.Rectangle) {
+    console.log('right click');
     trayClickListener(event, bounds, this.trayWindow);
   }
 }

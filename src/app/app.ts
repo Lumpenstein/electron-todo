@@ -2,16 +2,17 @@ import * as path from 'path';
 import {ipcMain} from 'electron';
 import installExtension, {REACT_DEVELOPER_TOOLS} from 'electron-devtools-installer';
 
-import {MainWindow , TrayWindow, AddTodoWindow, CustomTray} from './views/index';
+import {MainWindow , TrayWindow, AddTaskWindow, CustomTray} from './views/index';
 import {applicationMenuTemplate, trayContextMenuTemplate} from './menus/index';
-import {TODOLIST_ADD} from './utils/ipcCommands';
+import {TASK_LIST_ADD} from './utils/ipcCommands';
+import Task from './views/Task';
 
 // __dirname === /src/app/
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 export let mainWindow: MainWindow | null = null;
-export let addTodoWindow: AddTodoWindow | null = null;
+export let addTaskWindow: AddTaskWindow | null = null;
 export let trayWindow: TrayWindow | null = null;
 export let tray: CustomTray | null = null;
 
@@ -25,7 +26,7 @@ export const createMainWindow = async () => {
     url: `file://${__dirname}/views/main/main.html`,
     useApplicationMenu: true,
     menuTemplate: applicationMenuTemplate,
-    closeWindows: [addTodoWindow],
+    closeWindows: [addTaskWindow],
     closeApp: true,
     mainWindow: mainWindow
   });
@@ -36,58 +37,58 @@ export const createMainWindow = async () => {
     mainWindow.webContents.openDevTools();
   }
 
-  // Listen to addToDoWindow
-  ipcMain.on(TODOLIST_ADD, ({} /* event */ , todo: any) => {
-    if (todo && todo.length > 0) {
-      // Relay data to the mainWindow and close addTodoWindow
+  // Listen to addTaskWindow
+  ipcMain.on(TASK_LIST_ADD, ({} /* event */ , task: Task) => {
+    if (task && task.taskName.length > 0) {
+      // Relay data to the mainWindow and close addTaskWindow
       if (mainWindow) {
-        mainWindow.webContents.send(TODOLIST_ADD, todo);
+        mainWindow.webContents.send(TASK_LIST_ADD, task);
       }
-      if (addTodoWindow) {
-        addTodoWindow.close();
-        addTodoWindow = null; // For GC
+      if (addTaskWindow) {
+        addTaskWindow.close();
+        addTaskWindow = null; // For GC
       }
     }
   });
 };
 
-export const createAddTodoWindow = () => {
-  // If addTodoWindow already opened bring it to foreground and center it on the screen
-  if (addTodoWindow) {
-    addTodoWindow.focus();
-    addTodoWindow.center();
+export const createAddTaskWindow = () => {
+  // If addTaskWindow already opened bring it to foreground and center it on the screen
+  if (addTaskWindow) {
+    addTaskWindow.focus();
+    addTaskWindow.center();
 
-    // Create new addTodoWindow
+    // Create new addTaskWindow
   } else {
-    addTodoWindow = new AddTodoWindow({
-      title: 'Add a new Todo',
+    addTaskWindow = new AddTaskWindow({
+      title: 'Add a new TaskObject',
       width: 450,
       height: 300,
-      url: `file://${__dirname}/views/addTodo/addTodo.html`,
+      url: `file://${__dirname}/views/addTask/addTask.html`,
       menuTemplate: [],
       parent: mainWindow as Electron.BrowserWindow,
       modal: true,
-      addTodoWindow: addTodoWindow
+      addTaskWindow: addTaskWindow
     });
-    if (addTodoWindow) {
-      addTodoWindow.center();
+    if (addTaskWindow) {
+      addTaskWindow.center();
     }
   }
 
   // Open the DevTools
-  if (isDevMode && addTodoWindow) {
-    addTodoWindow.webContents.openDevTools();
+  if (isDevMode && addTaskWindow) {
+    addTaskWindow.webContents.openDevTools();
   }
 };
 
 export const createTrayWindow = () => {
-  // If addTodoWindow already opened bring it to foreground and center it on the screen
+  // If addTaskWindow already opened bring it to foreground and center it on the screen
   if (trayWindow) {
     trayWindow.focus();
     // Create new trayWindow
   } else {
     trayWindow = new TrayWindow({
-      title: 'Add a new Todo',
+      title: 'Add a new TaskObject',
       width: 300,
       height: 100,
       frame: false,
@@ -106,7 +107,7 @@ export const createTrayWindow = () => {
   tray = new CustomTray({
     iconPath: iconPath,
     trayWindow: trayWindow,
-    tooltip: 'Todos',
+    tooltip: 'Tasks',
     contextMenuTemplate: trayContextMenuTemplate
   });
 };

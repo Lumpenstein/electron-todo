@@ -1,15 +1,15 @@
 import {app} from 'electron';
-import {createAddTodoWindow, createTrayWindow, mainWindow} from '../app';
-import {TODOLIST_CLEAR} from '../utils/ipcCommands';
+import {createAddTaskWindow, createTrayWindow, mainWindow} from '../app';
+import {TASK_LIST_CLEAR} from '../utils/ipcCommands';
 
 export const applicationMenuTemplate: Electron.MenuItemConstructorOptions[] = [
   {
     label: 'File',
     submenu: [
       {
-        label: 'New Todo',
+        label: 'New TaskObject',
         click() {
-          createAddTodoWindow();
+          createAddTaskWindow();
         }
       },
       {
@@ -70,6 +70,6 @@ if (process.env.NODE_ENV !== 'production') {
 
 const clearTodoList = () => {
   if (mainWindow) {
-    mainWindow!.webContents.send(TODOLIST_CLEAR, {});
+    mainWindow!.webContents.send(TASK_LIST_CLEAR, {});
   }
 };

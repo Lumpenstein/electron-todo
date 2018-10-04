@@ -1,50 +1,56 @@
 import * as React from 'react';
 
 import { ipcRenderer } from 'electron';
-import {TODOLIST_ADD, TODOLIST_CLEAR} from '../../utils/ipcCommands';
+import {TASK_LIST_ADD, TASK_LIST_CLEAR} from '../../utils/ipcCommands';
+import Task from '../Task';
+
+export interface MainState {
+  taskList: Task[];
+}
 
 export class Main extends React.Component<any, any> {
 
-  state = {
-    todoList: []
+  state: MainState = {
+    taskList: []
   };
 
   componentDidMount() {
-    ipcRenderer.on(TODOLIST_ADD, (event: any, todo: any) => {
-      this.addTodo(todo);
+    ipcRenderer.on(TASK_LIST_ADD, ({} /* event: Electron.Event */, task: Task) => {
+      this.addTask(task);
     });
 
-    ipcRenderer.on(TODOLIST_CLEAR, () => {
+    ipcRenderer.on(TASK_LIST_CLEAR, () => {
       this.setState({
-        todoList: []
+        taskList: []
       });
     });
   }
 
-  addTodo = (todo: string) => {
-    const todoList = this.state.todoList;
+  addTask = (task: Task) => {
+    const taskList = this.state.taskList;
 
     // Check if not already in list
-    if (!todoList.find(todoInList => todoInList === todo)){
-      todoList.push(todo);
+    if (!taskList.find(taskInList => taskInList === task)) {
+      taskList.push(task);
     }
 
     this.setState({
-      todoList: todoList
+      taskList: taskList
     });
   };
 
   render() {
-    const todoList = this.state.todoList;
+    const taskList = this.state.taskList;
 
     return (
       <div>
-        <h2>Todos:</h2>
+        <h2>Tasks:</h2>
         <ul>
-          { todoList.map( todo => {
+          { taskList.map( task => {
             return (
-              <li key={todo}>
-                { todo }
+              <li key={task.created.toString()}>
+                { task.taskName }
+                { new Date(task.created) }
               </li>
             );
           })}

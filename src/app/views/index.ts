@@ -1,12 +1,12 @@
 import MainWindow from './MainWindow';
 import TrayWindow from './TrayWindow';
-import AddTodoWindow from './AddTodoWindow';
+import AddTaskWindow from './AddTaskWindow';
 
 import CustomTray from './CustomTray';
 
 export {
   MainWindow,
   TrayWindow,
-  AddTodoWindow,
+  AddTaskWindow,
   CustomTray,
 };

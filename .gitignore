@@ -2,6 +2,7 @@
 node_modules
 out
 /.idea
+dist
 
 # Ignore generated files
 *.d.ts

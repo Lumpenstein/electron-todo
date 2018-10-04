@@ -26,7 +26,7 @@ export default class MainWindow extends BrowserWindow {
       Menu.setApplicationMenu(mainMenu);
     } else {
       console.warn('individual menus not yet implemented');
-      // Todo Use mainWindow.setMenu...
+      // TaskObject Use mainWindow.setMenu...
     }
 
     // Emitted when the window is closed.

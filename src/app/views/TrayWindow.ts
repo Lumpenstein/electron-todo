@@ -14,7 +14,7 @@ export default class TrayWindow extends BrowserWindow {
 
     this.trayWindow = options.trayWindow;
 
-    // Load addTodo content
+    // Load addTask content
     this.loadURL(options.url);
 
     // Emitted when the window is closed.
