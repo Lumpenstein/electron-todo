@@ -1,24 +1,16 @@
 export interface TaskConstructorOptions {
   taskName: string;
-  created: number;
+  creationDate: number;
 }
 
 export default class Task {
 
-  private _created: number;
-  private _taskName: string;
+  public creationDate: number;
+  public taskName: string;
 
   constructor(options: TaskConstructorOptions) {
-    this._taskName = options.taskName;
-    this._created = options.created;
-  }
-
-  get taskName(): string {
-    return this._taskName;
-  }
-
-  get created(): number {
-    return this._created;
+    this.taskName = options.taskName;
+    this.creationDate = options.creationDate;
   }
 
 }

@@ -56,7 +56,7 @@ if (process.env.NODE_ENV !== 'production') {
         },
         {
           label: 'Toggle DevTools',
-          click({} /* item: Electron.Item */, focusedWindow: Electron.BrowserWindow) {
+          click(_item: Electron.MenuItem, focusedWindow: Electron.BrowserWindow) {
             focusedWindow.webContents.toggleDevTools();
           },
           accelerator: (() => {

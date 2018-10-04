@@ -38,8 +38,12 @@ export const createMainWindow = async () => {
   }
 
   // Listen to addTaskWindow
-  ipcMain.on(TASK_LIST_ADD, ({} /* event */ , task: Task) => {
-    if (task && task.taskName.length > 0) {
+  ipcMain.on(TASK_LIST_ADD, (_event: Electron.Event , task: Task) => {
+
+    console.log('task', task);
+    console.log('name', task.taskName);
+
+    if (task && task.taskName && task.taskName.length > 0) {
       // Relay data to the mainWindow and close addTaskWindow
       if (mainWindow) {
         mainWindow.webContents.send(TASK_LIST_ADD, task);

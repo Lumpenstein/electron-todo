@@ -15,7 +15,7 @@ export class AddTask extends React.Component<any, any> {
       if (document && document.querySelector('input[data-id=inputAddTask]')) {
         const value = (document!.querySelector('input[data-id=inputAddTask]')! as HTMLInputElement).value;
         const date = Date.now();
-        task = new Task({taskName: value, created: date});
+        task = new Task({taskName: value, creationDate: date});
       }
 
       ipcRenderer.send(TASK_LIST_ADD, task);

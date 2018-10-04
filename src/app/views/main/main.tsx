@@ -15,7 +15,7 @@ export class Main extends React.Component<any, any> {
   };
 
   componentDidMount() {
-    ipcRenderer.on(TASK_LIST_ADD, ({} /* event: Electron.Event */, task: Task) => {
+    ipcRenderer.on(TASK_LIST_ADD, (_Event: Electron.Event, task: Task) => {
       this.addTask(task);
     });
 
@@ -48,9 +48,9 @@ export class Main extends React.Component<any, any> {
         <ul>
           { taskList.map( task => {
             return (
-              <li key={task.created.toString()}>
+              <li key={task.creationDate.toString()}>
                 { task.taskName }
-                { new Date(task.created) }
+                { new Date(task.creationDate).toString() }
               </li>
             );
           })}

@@ -39,7 +39,7 @@ export default class CustomTray extends Tray {
   }
 }
 
-const trayClickListener = ({} /* event */, bounds: Electron.Rectangle, trayWindow: TrayWindow | null) => {
+const trayClickListener = (_event: Electron.Event, bounds: Electron.Rectangle, trayWindow: TrayWindow | null) => {
     // Position and toggle visibility on left-click
   if (trayWindow) {
 
